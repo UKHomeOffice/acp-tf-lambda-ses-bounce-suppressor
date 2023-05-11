@@ -13,10 +13,10 @@ variable "dynamo_ttl_days" {
 }
 
 # Supported on aws provider versions <= 4.51.0
-# variable "lambda_max_sqs_concurrency" {
-#   description = "The maximum number of lambda invocations by the sqs queue at a given time"
-#   default     = 2
-# }
+variable "lambda_max_sqs_concurrency" {
+  description = "The maximum number of lambda invocations by the sqs queue at a given time"
+  default     = 2
+}
 
 variable "lambda_sqs_batch_size" {
   description = "The maximum number of sqs messages that a single function invocation can process"

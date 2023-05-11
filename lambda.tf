@@ -34,6 +34,6 @@ resource "aws_lambda_event_source_mapping" "lambda_sqs_trigger" {
 
   # Supported on aws provider versions <= 4.51.0
   scaling_config {
-    maximum_concurrency = var.lambda_max_sqs_concurrency ? var.lambda_max_sqs_concurrency : 2
+    maximum_concurrency = var.lambda_max_sqs_concurrency
   }
 }
