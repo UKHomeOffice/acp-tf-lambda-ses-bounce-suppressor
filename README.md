@@ -2,6 +2,9 @@
 
 This python based AWS lambda function aims to automate the suppression of bounced email addresses from the AWS SES service via an SQS trigger
 
+## WARNING
+This TF Module requires at least AWS provider version of 4.51.0 this is to support setting maximum_concurrency to prevent the ses bounce suppressor from taking up the entire account Lambda quota
+
 ## Example usage
 ```
 module "ses_bounce_suppressor" {
