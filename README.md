@@ -27,14 +27,14 @@ module "ses_bounce_suppressor" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 3.75.1 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.66.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_archive"></a> [archive](#provider\_archive) | 2.3.0 |
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.75.2 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.66.1 |
 
 ## Modules
 
@@ -68,6 +68,7 @@ No modules.
 | <a name="input_dynamo_table_name"></a> [dynamo\_table\_name](#input\_dynamo\_table\_name) | The name of the dynamo table to store analytics in - leave blank to disable | `string` | `""` | no |
 | <a name="input_dynamo_ttl_days"></a> [dynamo\_ttl\_days](#input\_dynamo\_ttl\_days) | The time in days to set the ttl on dynamo table entries - default is 14 days | `number` | `14` | no |
 | <a name="input_function_name"></a> [function\_name](#input\_function\_name) | The name of the ses suppressor function | `any` | n/a | yes |
+| <a name="input_lambda_max_sqs_concurrency"></a> [lambda\_max\_sqs\_concurrency](#input\_lambda\_max\_sqs\_concurrency) | The maximum number of lambda invocations by the sqs queue at a given time | `number` | `2` | no |
 | <a name="input_lambda_sqs_batch_size"></a> [lambda\_sqs\_batch\_size](#input\_lambda\_sqs\_batch\_size) | The maximum number of sqs messages that a single function invocation can process | `number` | `10` | no |
 | <a name="input_ses_identity"></a> [ses\_identity](#input\_ses\_identity) | The name of the SES identity that the suppression is for | `any` | n/a | yes |
 | <a name="input_sqs_kms_arn"></a> [sqs\_kms\_arn](#input\_sqs\_kms\_arn) | The ARN of the KMS key of the SQS queue used to trigger the lambda function if configured | `string` | `""` | no |
