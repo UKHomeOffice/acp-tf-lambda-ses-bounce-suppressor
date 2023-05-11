@@ -7,6 +7,11 @@ variable "dynamo_table_name" {
   default     = ""
 }
 
+variable "dynamo_kms_arn" {
+  description = "The arn of the KMS key configured for the dynamo table if applicable"
+  default     = ""
+}
+
 variable "dynamo_ttl_days" {
   description = "The time in days to set the ttl on dynamo table entries - default is 14 days"
   default     = 14

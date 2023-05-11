@@ -81,16 +81,16 @@ data "aws_iam_policy_document" "lambda_sqs_kms_permissions" {
 }
 
 resource "aws_iam_policy" "lambda_sqs_kms_permissions" {
-  count       = var.sqs_kms_arn ? 1 : 0
+  count       = var.sqs_kms_arn != "" ? 1 : 0
   name        = "${var.function_name}-lambda-sqs-kms-role-policy"
-  description = "Additional KMS permissions for ${var.function_name}"
+  description = "Additional SQS KMS permissions for ${var.function_name}"
   policy      = data.aws_iam_policy_document.lambda_sqs_kms_permissions.json
 
   tags = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_sqs_kms_permissions" {
-  count      = var.sqs_kms_arn ? 1 : 0
+  count      = var.sqs_kms_arn != "" ? 1 : 0
   role       = aws_iam_role.lambda_role.name
   policy_arn = aws_iam_policy.lambda_sqs_kms_permissions[0].arn
 }
@@ -109,7 +109,7 @@ data "aws_iam_policy_document" "lambda_dynamo_permissions" {
 }
 
 resource "aws_iam_policy" "lambda_dynamo_permissions" {
-  count       = var.dynamo_table_name ? 1 : 0
+  count       = var.dynamo_table_name != "" ? 1 : 0
   name        = "${var.function_name}-lambda-dynamo-role-policy"
   description = "Additional dynamo table permissions for ${var.function_name}"
   policy      = data.aws_iam_policy_document.lambda_dynamo_permissions.json
@@ -118,7 +118,37 @@ resource "aws_iam_policy" "lambda_dynamo_permissions" {
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_dynamo_permissions" {
-  count      = var.dynamo_table_name ? 1 : 0
+  count      = var.dynamo_table_name != "" ? 1 : 0
   role       = aws_iam_role.lambda_role.name
   policy_arn = aws_iam_policy.lambda_dynamo_permissions[0].arn
+}
+
+
+# Dynamo Table KMS permissions if required
+data "aws_iam_policy_document" "lambda_dynamo_kms_permissions" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "kms:Decrypt",
+      "kms:GenerateDataKey"
+    ]
+    resources = [
+      var.dynamo_kms_arn
+    ]
+  }
+}
+
+resource "aws_iam_policy" "lambda_dynamo_kms_permissions" {
+  count       = var.dynamo_kms_arn != "" ? 1 : 0
+  name        = "${var.function_name}-lambda-dynamo-kms-role-policy"
+  description = "Additional Dynamo KMS permissions for ${var.function_name}"
+  policy      = data.aws_iam_policy_document.lambda_dynamo_kms_permissions.json
+
+  tags = var.tags
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_dynamo_kms_permissions" {
+  count      = var.dynamo_kms_arn != "" ? 1 : 0
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = aws_iam_policy.lambda_dynamo_kms_permissions[0].arn
 }
