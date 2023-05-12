@@ -1,6 +1,6 @@
 data "archive_file" "lambda_zip" {
   type        = "zip"
-  output_path = "${path.module}/tmp/lambda_zip.zip"
+  output_path = "${path.root}/tmp/lambda_zip.zip"
   source_dir  = "${path.module}/lambda/"
 }
 
@@ -11,7 +11,7 @@ resource "aws_lambda_function" "lambda" {
   role             = aws_iam_role.lambda_role.arn
   function_name    = var.function_name
   handler          = "function.lambda_handler"
-  runtime          = "python3.9"
+  runtime          = "python3.10"
   architectures    = ["arm64"]
   timeout          = var.timeout
 
@@ -33,7 +33,7 @@ resource "aws_lambda_event_source_mapping" "lambda_sqs_trigger" {
   batch_size       = var.lambda_sqs_batch_size
 
   # Supported on aws provider versions <= 4.51.0
-  # scaling_config {
-  #   maximum_concurrency = var.lambda_max_sqs_concurrency
-  # }
+  scaling_config {
+    maximum_concurrency = var.lambda_max_sqs_concurrency
+  }
 }
