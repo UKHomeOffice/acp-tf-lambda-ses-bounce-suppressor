@@ -48,11 +48,13 @@ No modules.
 | [aws_iam_policy.lambda_dynamo_kms_permissions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.lambda_dynamo_permissions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.lambda_sqs_kms_permissions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.lambda_sqs_permissions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_role.lambda_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy_attachment.lambda_default_permissions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.lambda_dynamo_kms_permissions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.lambda_dynamo_permissions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.lambda_sqs_kms_permissions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.lambda_sqs_permissions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_lambda_event_source_mapping.lambda_sqs_trigger](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_event_source_mapping) | resource |
 | [aws_lambda_function.lambda](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_function) | resource |
 | [archive_file.lambda_zip](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
@@ -62,6 +64,7 @@ No modules.
 | [aws_iam_policy_document.lambda_dynamo_permissions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.lambda_role_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.lambda_sqs_kms_permissions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.lambda_sqs_permissions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
@@ -76,7 +79,7 @@ No modules.
 | <a name="input_lambda_sqs_batch_size"></a> [lambda\_sqs\_batch\_size](#input\_lambda\_sqs\_batch\_size) | The maximum number of sqs messages that a single function invocation can process | `number` | `10` | no |
 | <a name="input_ses_identity"></a> [ses\_identity](#input\_ses\_identity) | The name of the SES identity that the suppression is for | `any` | n/a | yes |
 | <a name="input_sqs_kms_arn"></a> [sqs\_kms\_arn](#input\_sqs\_kms\_arn) | The ARN of the KMS key of the SQS queue used to trigger the lambda function if configured | `string` | `""` | no |
-| <a name="input_sqs_ses_bounce_arn"></a> [sqs\_ses\_bounce\_arn](#input\_sqs\_ses\_bounce\_arn) | The ARN of the sqs that will be used to trigger the lambda function | `any` | n/a | yes |
+| <a name="input_sqs_ses_bounce_arn"></a> [sqs\_ses\_bounce\_arn](#input\_sqs\_ses\_bounce\_arn) | The ARN of the sqs that will be used to trigger the lambda function | `string` | `""` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | AWS resource tagging | `any` | n/a | yes |
 | <a name="input_timeout"></a> [timeout](#input\_timeout) | The maximum allowed time for the lambda function to start in seconds | `number` | `30` | no |
 

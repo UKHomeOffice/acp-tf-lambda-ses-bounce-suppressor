@@ -27,6 +27,7 @@ resource "aws_lambda_function" "lambda" {
 }
 
 resource "aws_lambda_event_source_mapping" "lambda_sqs_trigger" {
+  count            = var.sqs_ses_bounce_arn != "" ? 1 : 0
   enabled          = true
   function_name    = aws_lambda_function.lambda.arn
   event_source_arn = var.sqs_ses_bounce_arn
