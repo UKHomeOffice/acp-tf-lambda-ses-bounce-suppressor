@@ -39,6 +39,7 @@ variable "sqs_kms_arn" {
 
 variable "sqs_ses_bounce_arn" {
   description = "The ARN of the sqs that will be used to trigger the lambda function"
+  default     = ""
 }
 
 variable "timeout" {
