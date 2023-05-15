@@ -71,7 +71,7 @@ data "aws_iam_policy_document" "lambda_sqs_permissions" {
 
 resource "aws_iam_policy" "lambda_sqs_permissions" {
   count       = var.sqs_ses_bounce_arn != "" ? 1 : 0
-  name        = "${var.function_name}-lambda-sqs--role-policy"
+  name        = "${var.function_name}-lambda-sqs-role-policy"
   description = "SQS permissions for ${var.function_name}"
   policy      = data.aws_iam_policy_document.lambda_sqs_permissions.json
 
