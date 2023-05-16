@@ -72,6 +72,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_dynamo_kms_arn"></a> [dynamo\_kms\_arn](#input\_dynamo\_kms\_arn) | The arn of the KMS key configured for the dynamo table if applicable | `string` | `""` | no |
+| <a name="input_dynamo_kms_arn_bool"></a> [dynamo\_kms\_arn\_bool](#input\_dynamo\_kms\_arn\_bool) | Workaround for Terraform Count compute - this is for the optional dynamo\_kms\_arn variable and must be set if used | `bool` | `false` | no |
 | <a name="input_dynamo_table_name"></a> [dynamo\_table\_name](#input\_dynamo\_table\_name) | The name of the dynamo table to store analytics in - leave blank to disable | `string` | `""` | no |
 | <a name="input_dynamo_ttl_days"></a> [dynamo\_ttl\_days](#input\_dynamo\_ttl\_days) | The time in days to set the ttl on dynamo table entries - default is 14 days | `number` | `14` | no |
 | <a name="input_function_name"></a> [function\_name](#input\_function\_name) | The name of the ses suppressor function | `any` | n/a | yes |
@@ -79,6 +80,7 @@ No modules.
 | <a name="input_lambda_sqs_batch_size"></a> [lambda\_sqs\_batch\_size](#input\_lambda\_sqs\_batch\_size) | The maximum number of sqs messages that a single function invocation can process | `number` | `10` | no |
 | <a name="input_ses_identity"></a> [ses\_identity](#input\_ses\_identity) | The name of the SES identity that the suppression is for | `any` | n/a | yes |
 | <a name="input_sqs_kms_arn"></a> [sqs\_kms\_arn](#input\_sqs\_kms\_arn) | The ARN of the KMS key of the SQS queue used to trigger the lambda function if configured | `string` | `""` | no |
+| <a name="input_sqs_kms_arn_bool"></a> [sqs\_kms\_arn\_bool](#input\_sqs\_kms\_arn\_bool) | Workaround for Terraform Count compute (kms) - this is for the optional variable and must be set if used | `bool` | `false` | no |
 | <a name="input_sqs_ses_bounce_arn"></a> [sqs\_ses\_bounce\_arn](#input\_sqs\_ses\_bounce\_arn) | The ARN of the sqs that will be used to trigger the lambda function | `string` | `""` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | AWS resource tagging | `any` | n/a | yes |
 | <a name="input_timeout"></a> [timeout](#input\_timeout) | The maximum allowed time for the lambda function to start in seconds | `number` | `30` | no |

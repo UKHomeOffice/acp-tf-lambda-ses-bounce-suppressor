@@ -12,6 +12,11 @@ variable "dynamo_kms_arn" {
   default     = ""
 }
 
+variable "dynamo_kms_arn_bool" {
+  description = "Workaround for Terraform Count compute - this is for the optional dynamo_kms_arn variable and must be set if used"
+  default     = false
+}
+
 variable "dynamo_ttl_days" {
   description = "The time in days to set the ttl on dynamo table entries - default is 14 days"
   default     = 14
@@ -35,6 +40,11 @@ variable "ses_identity" {
 variable "sqs_kms_arn" {
   description = "The ARN of the KMS key of the SQS queue used to trigger the lambda function if configured"
   default     = ""
+}
+
+variable "sqs_kms_arn_bool" {
+  description = "Workaround for Terraform Count compute (kms) - this is for the optional variable and must be set if used"
+  default     = false
 }
 
 variable "sqs_ses_bounce_arn" {
