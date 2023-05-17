@@ -19,7 +19,6 @@ resource "aws_lambda_function" "lambda" {
     variables = {
       DYNAMO_TABLE    = var.dynamo_table_name
       DYNAMO_TTL_DAYS = var.dynamo_ttl_days
-      SES_IDENTITY    = var.ses_identity
     }
   }
 

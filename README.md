@@ -10,7 +10,7 @@ This TF Module requires at least AWS provider version of 4.51.0 this is to suppo
 module "ses_bounce_suppressor" {
   source = "git::https://github.com/UKHomeOffice/acp-tf-lambda-ses-bounce-suppressor?ref=v0.0.1"
 
-  function_name      = "${var.ses_identity}-ses-bounce-suppressor"
+  function_name      = "${ses_identity}-ses-bounce-suppressor"
   sqs_ses_bounce_arn = ""
   sqs_kms_arn        = ""
   
@@ -78,7 +78,6 @@ No modules.
 | <a name="input_function_name"></a> [function\_name](#input\_function\_name) | The name of the ses suppressor function | `any` | n/a | yes |
 | <a name="input_lambda_max_sqs_concurrency"></a> [lambda\_max\_sqs\_concurrency](#input\_lambda\_max\_sqs\_concurrency) | The maximum number of lambda invocations by the sqs queue at a given time | `number` | `2` | no |
 | <a name="input_lambda_sqs_batch_size"></a> [lambda\_sqs\_batch\_size](#input\_lambda\_sqs\_batch\_size) | The maximum number of sqs messages that a single function invocation can process | `number` | `10` | no |
-| <a name="input_ses_identity"></a> [ses\_identity](#input\_ses\_identity) | The name of the SES identity that the suppression is for | `any` | n/a | yes |
 | <a name="input_sqs_kms_arn"></a> [sqs\_kms\_arn](#input\_sqs\_kms\_arn) | The ARN of the KMS key of the SQS queue used to trigger the lambda function if configured | `string` | `""` | no |
 | <a name="input_sqs_kms_arn_bool"></a> [sqs\_kms\_arn\_bool](#input\_sqs\_kms\_arn\_bool) | Workaround for Terraform Count compute (kms) - this is for the optional variable and must be set if used | `bool` | `false` | no |
 | <a name="input_sqs_ses_bounce_arn"></a> [sqs\_ses\_bounce\_arn](#input\_sqs\_ses\_bounce\_arn) | The ARN of the sqs that will be used to trigger the lambda function | `string` | `""` | no |

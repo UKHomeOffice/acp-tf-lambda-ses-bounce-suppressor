@@ -33,10 +33,6 @@ variable "lambda_sqs_batch_size" {
   default     = 10
 }
 
-variable "ses_identity" {
-  description = "The name of the SES identity that the suppression is for"
-}
-
 variable "sqs_kms_arn" {
   description = "The ARN of the KMS key of the SQS queue used to trigger the lambda function if configured"
   default     = ""
