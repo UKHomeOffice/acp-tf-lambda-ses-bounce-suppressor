@@ -18,12 +18,6 @@ try:
 except Exception as e:
     DYNAMO_TTL_DAYS = '14'
 
-# try setting ses identity table name from env var:
-try:
-    SES_IDENTITY = os.environ['SES_IDENTITY']
-except Exception as e:
-    SES_IDENTITY = None
-
 # create needed clients
 sesv2 = boto3.client('sesv2')
 dynamodb = boto3.client('dynamodb')
@@ -76,7 +70,7 @@ def return_ses_msg (record):
     return msg
 
 # Method to add to dynamodb for analytic purposes
-def add_dynamo_record (request_id, source_email, recipient_email):
+def add_dynamo_record (request_id, source_email, recipient_email, ses_identity):
     if DYNAMO_TABLE:
         logger.info('STEP :: dynamo table defined')
 
@@ -87,7 +81,7 @@ def add_dynamo_record (request_id, source_email, recipient_email):
             "uuid": {"S": request_id},
             "source_email": {"S": source_email},
             "recipient_email": {"S": recipient_email},
-            "ses_identity": {"S": str(SES_IDENTITY)},
+            "ses_identity": {"S": str(ses_identity)},
             "date_stamp": {"S": str(current_date)},
             "ttl": {"N": str(ttl_date)}
         }
@@ -128,7 +122,7 @@ def lambda_handler(event, context):
             if check_suppressed(recipient['emailAddress']):
                 continue
             
-            logger.info('STEP :: put recipient on account level supression list from source email ({})'.format(ses_msg['mail']['source']))
+            logger.info('STEP :: put recipient on account level suppression list from source email ({})'.format(ses_msg['mail']['source']))
 
             try:
                 put_suppressed_res = sesv2.put_suppressed_destination(
@@ -142,9 +136,9 @@ def lambda_handler(event, context):
                     raise e
             
             # Attempt to add bounced email to dynamo table for limited future analyics
-            add_dynamo_record(context.aws_request_id, ses_msg['mail']['source'], recipient['emailAddress'])
+            add_dynamo_record(context.aws_request_id, ses_msg['mail']['source'], recipient['emailAddress'], ses_msg['mail']['sourceArn'].split('/')[-1])
                     
-            logger.info('RESULT :: recipient from source email ({}) has been put recipient on account level supression list with reason - {}'.format(ses_msg['mail']['source'], notification_type.upper()))
+            logger.info('RESULT :: recipient from source email ({}) has been put recipient on account level suppression list with reason - {}'.format(ses_msg['mail']['source'], notification_type.upper()))
 
     logger.info('END :: bounced and complaints from recipients have been processed')
     return {
