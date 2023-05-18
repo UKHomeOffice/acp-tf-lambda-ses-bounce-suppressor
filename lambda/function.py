@@ -121,7 +121,7 @@ def lambda_handler(event, context):
                 if ses_msg['bounce']:
                     notification_reason = ses_msg['bounce']['bounceSubType']
 
-                else if ses_msg['complaint']:
+                elif ses_msg['complaint']:
                     notification_reason = ses_msg['complaint']['complaintFeedbackType']
             except Exception as e:
                 logger.error('ERROR :: unable to determine bounce/complaint reason')
