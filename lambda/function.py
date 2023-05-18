@@ -118,10 +118,10 @@ def lambda_handler(event, context):
             # Record notification reason
             notification_reason = ""
             try:
-                if ses_msg['bounce']:
+                if 'bounce' in ses_msg:
                     notification_reason = ses_msg['bounce']['bounceSubType']
 
-                elif ses_msg['complaint']:
+                elif 'complaint' in ses_msg:
                     notification_reason = ses_msg['complaint']['complaintFeedbackType']
             except Exception as e:
                 logger.error('ERROR :: unable to determine bounce/complaint reason')
@@ -137,13 +137,13 @@ def lambda_handler(event, context):
             add_dynamo_record(context.aws_request_id, ses_msg['mail']['source'], recipient['emailAddress'], ses_msg['mail']['sourceArn'].split('/')[-1], notification_type, notification_reason)
 
             # Do not add to account suppression list if bounces are transient (Soft Bounce: https://repost.aws/knowledge-center/ses-understand-soft-bounces)
-            if ses_msg['bounce']:
+            if 'bounce' in ses_msg:
                 if ses_msg['bounce']['bounceType'] != 'Permanent':
                     logger.info('SKIP :: bounce is transient')
                     continue
 
             # Do not add to account suppression list if the notification type is complaint
-            if ses_msg['complaint']:
+            if 'complaint' in ses_msg:
                 logger.info('SKIP :: notification type: complaint')
                 continue
 
