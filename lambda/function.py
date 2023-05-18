@@ -70,7 +70,7 @@ def return_ses_msg (record):
     return msg
 
 # Method to add to dynamodb for analytic purposes
-def add_dynamo_record (request_id, source_email, recipient_email, ses_identity, notification_type, notification_reason):
+def add_dynamo_record (request_id, source_email, recipient_email, ses_identity, notification_type, notification_subtype, notification_reason):
     if DYNAMO_TABLE:
         logger.info('STEP :: dynamo table defined')
 
@@ -83,6 +83,7 @@ def add_dynamo_record (request_id, source_email, recipient_email, ses_identity, 
             "recipient_email": {"S": str(recipient_email)},
             "ses_identity": {"S": str(ses_identity)},
             "notification_type": {"S": str(notification_type)},
+            "notification_subtype": {"S": str(notification_subtype)},
             "notification_reason": {"S": str(notification_reason)},
             "date_stamp": {"S": str(current_date)},
             "ttl": {"N": str(ttl_date)}
@@ -116,10 +117,12 @@ def lambda_handler(event, context):
 
         for recipient in ses_msg[notification_type.lower()][notification_type_recipients_dict[notification_type]]:
             # Record notification reason
+            notification_subtype = "n/a"
             notification_reason = ""
             try:
                 if 'bounce' in ses_msg:
                     notification_reason = ses_msg['bounce']['bounceSubType']
+                    notification_subtype = ses_msg['bounce']['bounceType']
 
                 elif 'complaint' in ses_msg:
                     notification_reason = ses_msg['complaint']['complaintFeedbackType']
@@ -134,7 +137,7 @@ def lambda_handler(event, context):
                 continue
 
             # Attempt to add bounced email to dynamo table for limited future analytics
-            add_dynamo_record(context.aws_request_id, ses_msg['mail']['source'], recipient['emailAddress'], ses_msg['mail']['sourceArn'].split('/')[-1], notification_type, notification_reason)
+            add_dynamo_record(context.aws_request_id, ses_msg['mail']['source'], recipient['emailAddress'], ses_msg['mail']['sourceArn'].split('/')[-1], notification_type, notification_subtype, notification_reason)
 
             # Do not add to account suppression list if bounces are transient (Soft Bounce: https://repost.aws/knowledge-center/ses-understand-soft-bounces)
             if 'bounce' in ses_msg:
