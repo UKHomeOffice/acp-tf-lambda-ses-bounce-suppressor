@@ -70,7 +70,7 @@ def return_ses_msg (record):
     return msg
 
 # Method to add to dynamodb for analytic purposes
-def add_dynamo_record (request_id, source_email, recipient_email, ses_identity):
+def add_dynamo_record (request_id, source_email, recipient_email, ses_identity, notification_type, notification_reason):
     if DYNAMO_TABLE:
         logger.info('STEP :: dynamo table defined')
 
@@ -78,10 +78,12 @@ def add_dynamo_record (request_id, source_email, recipient_email, ses_identity):
         ttl_date = (current_date + timedelta(days=int(DYNAMO_TTL_DAYS))).timestamp()
 
         item = {
-            "uuid": {"S": request_id},
-            "source_email": {"S": source_email},
-            "recipient_email": {"S": recipient_email},
+            "uuid": {"S": str(request_id)},
+            "source_email": {"S": str(source_email)},
+            "recipient_email": {"S": str(recipient_email)},
             "ses_identity": {"S": str(ses_identity)},
+            "notification_type": {"S": str(notification_type)},
+            "notification_reason": {"S": str(notification_reason)},
             "date_stamp": {"S": str(current_date)},
             "ttl": {"N": str(ttl_date)}
         }
@@ -99,7 +101,7 @@ def add_dynamo_record (request_id, source_email, recipient_email, ses_identity):
 #AWS seems to have two different formats returned by bounce notifications, adding both
 def lambda_handler(event, context):
 
-    logger.info('START :: check and supress recipients that have bounced or complained')
+    logger.info('START :: check and suppress recipients that have bounced or complained')
 
     for record in event['Records']:
         ses_msg = return_ses_msg(record)
@@ -113,15 +115,41 @@ def lambda_handler(event, context):
             }
 
         for recipient in ses_msg[notification_type.lower()][notification_type_recipients_dict[notification_type]]:
+            # Record notification reason
+            notification_reason = ""
+            try:
+                if 'bounce' in ses_msg:
+                    notification_reason = ses_msg['bounce']['bounceSubType']
+
+                elif 'complaint' in ses_msg:
+                    notification_reason = ses_msg['complaint']['complaintFeedbackType']
+            except Exception as e:
+                logger.error('ERROR :: unable to determine bounce/complaint reason')
+                print (e)
+
             logger.info('STEP :: check recipient from source email ({})'.format(ses_msg['mail']['source']))
 
             if recipient['emailAddress'] == 'bounce@simulator.amazonses.com':
                 logger.info('SKIP :: recipient is test email (bounce@simulator.amazonses.com)')
                 continue
 
+            # Attempt to add bounced email to dynamo table for limited future analytics
+            add_dynamo_record(context.aws_request_id, ses_msg['mail']['source'], recipient['emailAddress'], ses_msg['mail']['sourceArn'].split('/')[-1], notification_type, notification_reason)
+
+            # Do not add to account suppression list if bounces are transient (Soft Bounce: https://repost.aws/knowledge-center/ses-understand-soft-bounces)
+            if 'bounce' in ses_msg:
+                if ses_msg['bounce']['bounceType'] != 'Permanent':
+                    logger.info('SKIP :: bounce is transient')
+                    continue
+
+            # Do not add to account suppression list if the notification type is complaint
+            if 'complaint' in ses_msg:
+                logger.info('SKIP :: notification type: complaint')
+                continue
+
             if check_suppressed(recipient['emailAddress']):
                 continue
-            
+
             logger.info('STEP :: put recipient on account level suppression list from source email ({})'.format(ses_msg['mail']['source']))
 
             try:
@@ -134,10 +162,7 @@ def lambda_handler(event, context):
                     logger.info('SKIP :: account is still in sandbox mode')
                 else:
                     raise e
-            
-            # Attempt to add bounced email to dynamo table for limited future analyics
-            add_dynamo_record(context.aws_request_id, ses_msg['mail']['source'], recipient['emailAddress'], ses_msg['mail']['sourceArn'].split('/')[-1])
-                    
+
             logger.info('RESULT :: recipient from source email ({}) has been put recipient on account level suppression list with reason - {}'.format(ses_msg['mail']['source'], notification_type.upper()))
 
     logger.info('END :: bounced and complaints from recipients have been processed')
